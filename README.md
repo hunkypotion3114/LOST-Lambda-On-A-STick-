@@ -23,5 +23,5 @@ The following are the parameters for the three equations:
 &emsp; &emsp; a. The third line is the key generator for all the special charectors. \
 &emsp; &emsp; b. Its equation is given by : y=(M3)x + (C3) \
 &emsp; &emsp; Where:\
-&emsp; &emsp; &emsp; i) M3 and C3 are such that the x-intercept of the line divides the the line joining the points (X1,0) and (X2,0) in the ratio m:n \
+&emsp; &emsp; &emsp; i) M3 and C3 are such that the x-intercept of the line divides the the line joining the points (X1,0) and (X2,0) in &emsp; &emsp; &emsp; the ratio m:n \
 &emsp; &emsp; &emsp; ii) m:n = value of key of "A"/value of key of "a" , X1 = X-intercept of Line1, X2= X-intercept of Line2
