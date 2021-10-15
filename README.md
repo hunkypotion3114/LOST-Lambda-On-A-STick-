@@ -1,4 +1,4 @@
-# LOST(Lambda On A STick)
+# LOST(Lambda On a STick)
 A rather trivial encryption when graphed represents a lambda which has been propped on a stick. The enryption is a advanced version of COKE's Encryption, essentially involving more advanced mathematics, particularly coordinate geometry.
 # PRINCIPLE BEHIND THE CIPHER:
 ### Charectors Allowed:
