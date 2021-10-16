@@ -1,5 +1,6 @@
 import math
 plainText = input("Enter The text to be encrypted: ")
+# plainText = "hello!"
 lengthOfText = len(plainText)
 lineOneKeys, lineTwoKeys, lineThreeKeys = [], [], []
 # Initialising list of available chars
@@ -21,7 +22,7 @@ M1 = math.tan(thetaOne)
 M2 = math.tan(thetaTwo)
 numOfChars = len(list(filter(lambda x : x in lineThreeChrs , plainText)))
 C1 = 30 + numOfChars
-C2 = C1 + 23
+C2 = C1 + lengthOfText
 # Co-ordinates of point of intersection of L1, L2
 xIntL1L2 = (C2-C1)/(M1-M2)
 yIntL1L2 = (C1*M2 - M1*C2)/(M2-M1)
@@ -66,18 +67,22 @@ for c in range(0,32):
     L2Ordinate = list(filter(lambda x: x not in lineThreeChrs, str(lineTwoRawOrdinate[c])))
     L3Ordinate = list(filter(lambda x: x not in lineThreeChrs, str(lineThreeRawOrdinate[c])))
     # Pushing key to list of keys
-    lineOneKeys.append(sum(list(map(lambda x : int(x)**5 , L1Ordinate))))
-    lineTwoKeys.append(sum(list(map(lambda x : int(x)**5 , L2Ordinate))))
-    lineThreeKeys.append(sum(list(map(lambda x : int(x)**5 , L3Ordinate))))
+    lineOneKeys.append(sum(list(map(lambda x : int(x)**3 + 11 , L1Ordinate))))
+    lineTwoKeys.append(sum(list(map(lambda x : int(x)**4 + 12 , L2Ordinate))))
+    lineThreeKeys.append(sum(list(map(lambda x : int(x)**5 + 13, L3Ordinate))))
 # print(lineOneKeys,lineTwoKeys,lineThreeKeys)
 
 # checking for duplicates in other lists
-l1Duplicates = list(filter(lambda x : x in lineTwoRawOrdinate or x in lineThreeRawOrdinate, lineOneRawOrdinate))
+# Ordinates never have duplicates
 l2Duplicates = list(filter(lambda x : x in lineOneRawOrdinate or x in lineThreeRawOrdinate, lineTwoRawOrdinate))
+l1Duplicates = list(filter(lambda x : x in lineTwoRawOrdinate or x in lineThreeRawOrdinate, lineOneRawOrdinate))
 l3Duplicates = list(filter(lambda x : x in lineTwoRawOrdinate or x in lineOneRawOrdinate, lineThreeRawOrdinate))
 print(l1Duplicates, l2Duplicates, l3Duplicates)
 
-l1Duplicates = list(filter(lambda x : x in lineTwoKeys or x in lineThreeKeys, lineOneKeys))
-l2Duplicates = list(filter(lambda x : x in lineOneKeys or x in lineThreeKeys, lineTwoKeys))
-l3Duplicates = list(filter(lambda x : x in lineTwoKeys or x in lineOneKeys, lineThreeKeys))
+# Moderate chance of having a duplicate.
+# Maybe if we can find a relation between C2 and number of duplicates we might be able to do something
+l1Duplicates = list(filter(lambda x : x in lineTwoKeys or x in lineThreeKeys or lineOneKeys.count(x) > 1, lineOneKeys))
+l2Duplicates = list(filter(lambda x : x in lineOneKeys or x in lineThreeKeys or lineTwoKeys.count(x) > 1, lineTwoKeys))
+l3Duplicates = list(filter(lambda x : x in lineTwoKeys or x in lineOneKeys or lineThreeKeys.count(x) >1, lineThreeKeys))
 print(l1Duplicates, l2Duplicates, l3Duplicates)
+print(lineOneKeys,lineTwoKeys,lineThreeKeys)
