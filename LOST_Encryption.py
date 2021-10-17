@@ -1,12 +1,10 @@
 import math
-plainText = input("Enter The text to be encrypted: ")
-lengthOfText = len(plainText)%90
-problemLengths = [1,2,3,4,0]
-if(lengthOfText in problemLengths):
-    lengthOfText = 7
+import time
+
 # Initialising list of available chars
 lineOneChrs = []
 lineTwoChrs =[]
+lineThreeChrs = ["`","~","!","@","#","$","%","^","&","*","(",")","-","_","=","+","{","}","[","]","|","\\",";",":","\'","\"",",","<",".",">","/","?"]
 for a in range(0,26):
     asciiUpperCase = 65 + a
     asciiLowerCase = 97+a
@@ -14,17 +12,21 @@ for a in range(0,26):
     lineTwoChrs.append(chr(asciiLowerCase))
 lineOneChrs.extend(["0","1","2","3","4"," "])
 lineTwoChrs.extend(["5","6","7","8","9","\t"])
-lineThreeChrs = ["`","~","!","@","#","$","%","^","&","*","(",")","-","_","=","+","{","}","[","]","|","\\",";",":","\'","\"",",","<",".",">","/","?"]
-# Angle of inclination of L1, L2
-thetaOne = (lengthOfText)*(math.pi/180)
-thetaTwo = 2.15 + thetaOne
-# Slopes and Y-int of Lines 1,2
-M1 = float("%.15f"%math.tan(thetaOne))
-M2 = float("%.15f"%math.tan(thetaTwo))
-numOfChars = len(list(filter(lambda x : x in lineThreeChrs , plainText)))
-C1 = 30 + numOfChars
-C2 = C1 + round(lengthOfText)
-print(M1, thetaOne,C2)
+
+
+def slopesConsts(lengthOfText, numOfChars):
+    # Angle of inclination of L1, L2
+    thetaOne = (lengthOfText)*(math.pi/180)
+    thetaTwo = 2.15 + thetaOne
+    # Slopes and Y-int of Lines 1,2
+    M1 = float("%.16f"%math.tan(thetaOne))
+    M2 = float("%.16f"%math.tan(thetaTwo))
+    C1 = 30 + numOfChars
+    C2 = C1 + round(lengthOfText)
+    sAndC = [M1,M2,C1,C2]
+    return sAndC
+
+
 # Function to allote key values
 def keyAllotment(M1,M2,C1,C2,lineThreeChrs):
     keys = [[],[],[]]
@@ -66,27 +68,60 @@ def keyAllotment(M1,M2,C1,C2,lineThreeChrs):
         keys[2].append(sum(list(map(lambda x : int(x)**3, L3Ordinate))))
     return keys
 
+
 # Function to ensure there exists no duplicates in the keys.
-def C2Decider(M1,M2,C1,C2, lineThreeChrs):
+def C2Decider(M1,M2,C1,C2,numOfChars,lineThreeChrs):
     keys = keyAllotment(M1,M2,C1,C2,lineThreeChrs)
     newC2 = C2
+    tic = time.perf_counter()
+
     while True :
         duplicates=[list(filter(lambda x : x in keys[1] or x in keys[2] or keys[0].count(x) > 1, keys[0])),
                     list(filter(lambda x : x in keys[0] or x in keys[2] or keys[1].count(x) > 1, keys[1])),
                     list(filter(lambda x : x in keys[1] or x in keys[0] or keys[2].count(x) >1, keys[2]))
                     ]
         # print(duplicates)
+
         if(len(duplicates[0]) > 0 or len(duplicates[1]) > 0 or len(duplicates[2]) > 0):
             newC2 +=1
             keys = keyAllotment(M1,M2,C1,newC2,lineThreeChrs)
+            toc = time.perf_counter()
+
+            if(toc - tic >= 5):
+                slopesConstants = slopesConsts(69, numOfChars)
+                keys = keyAllotment(slopesConstants[0],slopesConstants[1],slopesConstants[2],slopesConstants[3],lineThreeChrs)
+                newC2 = slopesConstants[3]
+
+                while True :
+                    duplicates=[list(filter(lambda x : x in keys[1] or x in keys[2] or keys[0].count(x) > 1, keys[0])),
+                    list(filter(lambda x : x in keys[0] or x in keys[2] or keys[1].count(x) > 1, keys[1])),
+                    list(filter(lambda x : x in keys[1] or x in keys[0] or keys[2].count(x) >1, keys[2]))
+                    ]
+
+                    # print(duplicates)
+                    if(len(duplicates[0]) > 0 or len(duplicates[1]) > 0 or len(duplicates[2]) > 0):
+                        newC2 +=1
+                        keys = keyAllotment(slopesConstants[0],slopesConstants[1],slopesConstants[2],newC2,lineThreeChrs)
+                    else:
+                        return keys
         else:
             keys.append([C2,newC2])
-            return keys
+            break
+    return keys
 
-keys = C2Decider(M1,M2,C1,C2,lineThreeChrs)
+
+plainText = input("Enter The text to be encrypted: ")
+lengthOfText = len(plainText)%90
+numOfChars = len(list(filter(lambda x : x in lineThreeChrs , plainText)))
+problemLength = 0
+if(lengthOfText == problemLength):
+    lengthOfText = 69
+
+lineParams = slopesConsts(lengthOfText, numOfChars)
+keys = C2Decider(lineParams[0],lineParams[1],lineParams[2],lineParams[3],numOfChars,lineThreeChrs)
 # keys = keyAllotment(M1,M2,C1,C2,lineThreeChrs)
-duplicates=[list(filter(lambda x : x in keys[1] or x in keys[2] or keys[0].count(x) > 1, keys[0])),
-            list(filter(lambda x : x in keys[0] or x in keys[2] or keys[1].count(x) > 1, keys[1])),
-            list(filter(lambda x : x in keys[1] or x in keys[0] or keys[2].count(x) >1, keys[2]))
-            ]
-# print(duplicates)
+# duplicates=[list(filter(lambda x : x in keys[1] or x in keys[2] or keys[0].count(x) > 1, keys[0])),
+#             list(filter(lambda x : x in keys[0] or x in keys[2] or keys[1].count(x) > 1, keys[1])),
+#             list(filter(lambda x : x in keys[1] or x in keys[0] or keys[2].count(x) >1, keys[2]))
+#             ]
+# At this juncture we have two options: One we plainly just use the key values obtained and encrypt, Two we form a poly equation and encrypt that.
